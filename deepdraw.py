@@ -161,80 +161,83 @@ def deepdraw(net, base_img, octaves, random_crop=True, visualize=True, focus=Non
     return deprocess(net, image)
 
 
-# #### Generating the class visualizations
-# 
-# The ```octaves``` list determines in which order we optimize layers, as well as how many iterations and scaling on each octave. For each octave, parameters are:
-# * ```layer``` : which layer to optimize
-# * ```iter_n``` : how many iterations
-# * ```scale``` : by what factor (if any) to scale up the base image before proceeding
-# * ```start_sigma``` : the initial radius of the gaussian blur
-# * ```end_sigma``` : the final radius of the gaussian blur
-# * ```start_step_size``` : the initial step size of the gradient ascent
-# * ```end_step_size``` : the final step size of the gradient ascent
-# 
-# The choice of octave parameters below will give decent images, and is the one used for visualizations in the blogpost. However, the choice of parameters was a bit arbitrary, so feel free to experiment. Note that generating an image will take around 1 minute with GPU-enabled Caffe, or 10-15 minutes if you're running purely on CPU, depending on your computer performance.
+def run( inimage, imagenet_class):
+	# #### Generating the class visualizations
+	# 
+	# The ```octaves``` list determines in which order we optimize layers, as well as how many iterations and scaling on each octave. For each octave, parameters are:
+	# * ```layer``` : which layer to optimize
+	# * ```iter_n``` : how many iterations
+	# * ```scale``` : by what factor (if any) to scale up the base image before proceeding
+	# * ```start_sigma``` : the initial radius of the gaussian blur
+	# * ```end_sigma``` : the final radius of the gaussian blur
+	# * ```start_step_size``` : the initial step size of the gradient ascent
+	# * ```end_step_size``` : the final step size of the gradient ascent
+	# 
+	# The choice of octave parameters below will give decent images, and is the one used for visualizations in the blogpost. However, the choice of parameters was a bit arbitrary, so feel free to experiment. Note that generating an image will take around 1 minute with GPU-enabled Caffe, or 10-15 minutes if you're running purely on CPU, depending on your computer performance.
 
-# these octaves determine gradient ascent steps
-octaves = [
-    {
-        'layer':'loss3/classifier',
-        'iter_n':190,
-        'start_sigma':2.5,
-        'end_sigma':0.78,
-        'start_step_size':11.,
-        'end_step_size':11.
-    },
-    {
-        'layer':'loss3/classifier',
-        'scale':1.2,
-        'iter_n':150,
-        'start_sigma':0.78*1.2,
-        'end_sigma':0.78,
-        'start_step_size':6.,
-        'end_step_size':6.
-    },
-    {
-        'layer':'loss2/classifier',
-        'scale':1.2,
-        'iter_n':150,
-        'start_sigma':0.78*1.2,
-        'end_sigma':0.44,
-        'start_step_size':6.,
-        'end_step_size':3.
-    },
-    {
-        'layer':'loss1/classifier',
-        'iter_n':10,
-        'start_sigma':0.44,
-        'end_sigma':0.304,
-        'start_step_size':3.,
-        'end_step_size':3.
-    }
-]
-#get imagenet class
-ap = argparse.ArgumentParser()
-ap.add_argument("-c", "--iclass", required=True, help="imagenet_class")
-ap.add_argument("-i", "--image", required=True, help="image to inpaint")
-args = ap.parse_args()
-imagenet_class = int(args.iclass)
+	# these octaves determine gradient ascent steps
+	octaves = [
+		{
+		    'layer':'loss3/classifier',
+		    'iter_n':190,
+		    'start_sigma':2.5,
+		    'end_sigma':0.78,
+		    'start_step_size':11.,
+		    'end_step_size':11.
+		},
+		{
+		    'layer':'loss3/classifier',
+		    'scale':1.2,
+		    'iter_n':150,
+		    'start_sigma':0.78*1.2,
+		    'end_sigma':0.78,
+		    'start_step_size':6.,
+		    'end_step_size':6.
+		},
+		{
+		    'layer':'loss2/classifier',
+		    'scale':1.2,
+		    'iter_n':150,
+		    'start_sigma':0.78*1.2,
+		    'end_sigma':0.44,
+		    'start_step_size':6.,
+		    'end_step_size':3.
+		},
+		{
+		    'layer':'loss1/classifier',
+		    'iter_n':10,
+		    'start_sigma':0.44,
+		    'end_sigma':0.304,
+		    'start_step_size':3.,
+		    'end_step_size':3.
+		}
+	]
+	#get imagenet class
+	#ap = argparse.ArgumentParser()
+	#ap.add_argument("-c", "--iclass", required=True, help="imagenet_class")
+	#ap.add_argument("-i", "--image", required=True, help="image to inpaint")
+	#args = ap.parse_args()
+	#imagenet_class = int(args.iclass)
 
-# get original input size of network
-original_w = net.blobs['data'].width
-original_h = net.blobs['data'].height
-# the background color of the initial image
-background_color = np.float32([200.0, 200.0, 200.0])
-# generate initial random image
-gen_image = np.random.normal(background_color, 8, (original_w, original_h, 3))
+	# get original input size of network
+	original_w = net.blobs['data'].width
+	original_h = net.blobs['data'].height
+	# the background color of the initial image
+	#background_color = np.float32([200.0, 200.0, 200.0])
+	# generate initial random image
+	#gen_image = np.random.normal(background_color, 8, (original_w, original_h, 3))
 
-#open image
-#im = Image.open(args.image)
-#gen_image = np.array(im)
+	#open image
+	#im = Image.open(args.image)
+	gen_image = np.array(inimage)
 
-# generate class visualization via octavewise gradient ascent
-gen_image = deepdraw(net, gen_image, octaves, focus=imagenet_class, 
-                 random_crop=True, visualize=False)
+	# generate class visualization via octavewise gradient ascent
+	gen_image = deepdraw(net, gen_image, octaves, focus=imagenet_class, 
+		             random_crop=True, visualize=False)
 
-# save image
-img_fn = '_'.join([model_name, "deepdraw", str(imagenet_class)+'.jpg'])
-PIL.Image.fromarray(np.uint8(gen_image)).save('./' + img_fn)
+	# save image
+	#img_fn = '_'.join([model_name, "deepdraw", str(imagenet_class)+'.jpg'])
+	#img_fn = 'new.jpg'
+	#PIL.Image.fromarray(np.uint8(gen_image)).save('./' + img_fn)
+	return gen_image
 

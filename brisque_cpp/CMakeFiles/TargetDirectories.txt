@@ -1,0 +1,3 @@
+/home/aishwarya/brisque_cpp/CMakeFiles/edit_cache.dir
+/home/aishwarya/brisque_cpp/CMakeFiles/rebuild_cache.dir
+/home/aishwarya/brisque_cpp/CMakeFiles/brisquequality.dir

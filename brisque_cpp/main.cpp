@@ -77,5 +77,5 @@ int  main(int argc, char** argv)
    trainModel();
   
   qualityscore = computescore(prefix, filename);
-  cout<<"score in main file is given by:"<<qualityscore<<endl;
+  cout<<qualityscore;
 }

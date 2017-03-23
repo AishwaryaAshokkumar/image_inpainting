@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+    <title>Inpainting</title>
+    <style type="text/css">
+    	h1 { color: #000; font-family: 'Raleway',sans-serif; font-size: 40px; font-weight: 300; line-height: 72px; margin: 40 0 0px; text-align: center; text-transform: uppercase; }
+    	h2 { color: #000; font-family: 'Raleway',sans-serif; font-size: 20px; font-weight: 200; line-height: 40px; margin: 20 0 0px; text-align: center; text-transform: uppercase; }
+    	.hide{display:none;}
+        .show{display:block;}
+        body{
+        	text-align: center;
+        	background-color: #ffffff
+        }
+
+		input[type="file"]::-webkit-file-upload-button {
+  				visibility: hidden;
+		}
+		input[type="file"]::before{
+			content: "";
+		}
+		input[type="file"]:hover::before {
+			border-color: black;
+		}
+		input[type="file"] {
+			border: 1px solid #ccc;
+			box-shadow: inset 0 1px 3px #ddd;
+			box-sizing: border-box;
+			border-radius: 20px;
+			height: 35px;
+			width: 350px;
+		}
+		.button-upload {
+			font-size: 100%;
+			padding: .2em 1em;
+			color: #444;
+			color: rgba(0,0,0,.8);
+			border: 1px solid #999;
+			border: transparent;
+			background-color: #E6E6E6;
+			text-decoration: none;
+		    color: white;
+		    border-radius: 20px;
+		    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+		    background: rgb(100, 20, 20);
+		}
+		#maindiv{
+			margin-top: 10%;
+		}
+
+    </style>
+
+    <h1>Image Inpainting</h1>
+    <div class="show" id="maindiv">
+    <form method=post enctype=multipart/form-data id="upload-file">
+      	 <input type=file name=file id="file">
+      	 <button type="button" id="upload" class="button-upload">Upload</button>
+    </form>
+    </div>
+    <div class="hide" id="result">
+    <h2 id="text">Drawing Image... Please Wait..</h2>
+    <img src="../loading.gif" id="loader"/>
+    </div>
+</html>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+	$(window).load(function(){
+	    $("#upload").click(function(){
+	    	/*var image=document.getElementById("loader");
+			image.class="show";*/
+			$("#maindiv").css("display", "none");
+			$("#result").css("display", "block");
+			var form_data = new FormData($('#upload-file')[0]);
+            $.ajax({
+                type:"POST",
+                url: '/',
+                data: form_data,
+                contentType: false,
+            cache: false,
+            processData: false,
+            async: false,	
+                success: function(data){
+                    console.log("success");
+                    $("#text").html("New Inpainted Image")
+                    $("#loader").attr("src", "../final.png");
+                    $("#loader").attr("height","auto");
+                    $("#loader").attr("width","auto");
+                },
+                error: function(){
+                    alert("There was an error in passing....please excuse us.");
+                }
+            });
+        });
+    });
+
+</script>

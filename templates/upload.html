@@ -47,7 +47,8 @@
 		}
 
     </style>
-
+    {% extends "layout.html" %}
+    {% block body %}
     <h1>Image Inpainting</h1>
     <div class="show" id="maindiv">
     <form method=post enctype=multipart/form-data id="upload-file">
@@ -59,6 +60,7 @@
     <h2 id="text">Drawing Image... Please Wait..</h2>
     <img src="../loading.gif" id="loader"/>
     </div>
+    {% endblock %}
 </html>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
@@ -90,6 +92,7 @@
                     alert("There was an error in passing....please excuse us.");
                 }
             });
+        }
         });
     });
 

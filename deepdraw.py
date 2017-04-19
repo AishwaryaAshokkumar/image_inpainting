@@ -205,7 +205,15 @@ def run( inimage, imagenet_class):
 		},
 		{
 		    'layer':'loss1/classifier',
-		    'iter_n':10,
+		    'iter_n':50,
+		    'start_sigma':0.44,
+		    'end_sigma':0.304,
+		    'start_step_size':3.,
+		    'end_step_size':3.
+		},
+		{
+		    'layer':'loss1/classifier',
+		    'iter_n':50,
 		    'start_sigma':0.44,
 		    'end_sigma':0.304,
 		    'start_step_size':3.,

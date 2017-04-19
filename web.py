@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, flash
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 import subprocess
@@ -48,8 +48,6 @@ def uploaded_file(filename):
     #rc=proc.returncode
     import join
     rc=join.run(str(filename))
-    print "Hello"
-    return "success"
     # return render_template('function.html',value=False)
 
 

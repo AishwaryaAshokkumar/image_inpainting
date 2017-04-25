@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template, flash
+from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 import subprocess
@@ -41,12 +41,13 @@ def send_file(filename):
 def uploaded_file(filename):
     import join
     rc=join.run(str(filename))
+    return "success"
     #return rc
     # return render_template('function.html',value=False)
 
 
 if __name__ == '__main__':
     app.config["SECRET_KEY"] = "ITSASECRET"
-    app.run(port=7000,debug=True)
+    app.run(port=8000,debug=True)
 
 

@@ -18,20 +18,18 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            return('No file part')
         file = request.files['file']
         # if user does not select file, browser also
         # submit a empty part without filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            return('No selected file')
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            #return('success')
             #print "uploaded file"+filename
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            return redirect(url_for('uploaded_file',filename=filename))
     return render_template('upload.html')
 
 @app.route('/<filename>')
@@ -41,18 +39,14 @@ def send_file(filename):
 
 @app.route('/show/<filename>')
 def uploaded_file(filename):
-	#filename = 'http://127.0.0.1:5000/' + filename
-    #print "python join.py -i " + str(filename)
-    #proc=subprocess.Popen("python join.py -i " + str(filename),shell=True)
-    #streamdata=proc.communicate()[0]
-    #rc=proc.returncode
     import join
     rc=join.run(str(filename))
+    #return rc
     # return render_template('function.html',value=False)
 
 
 if __name__ == '__main__':
     app.config["SECRET_KEY"] = "ITSASECRET"
-    app.run(port=8000,debug=True)
+    app.run(port=7000,debug=True)
 
 

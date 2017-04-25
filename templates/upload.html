@@ -1,6 +1,46 @@
 <!doctype html>
 <html lang="en">
     <title>Inpainting</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>    
+    <script type="text/javascript">
+
+	$(window).load(function(){
+	    $("#upload").click(function(){
+	    	/*var image=document.getElementById("loader");
+			image.class="show";*/
+			$("#maindiv").css("display", "none");
+			$("#result").css("display", "block");
+			var form_data = new FormData($('#upload-file')[0]);
+            $.ajax({
+                type:"POST",
+                url: '/',
+                data: form_data,
+                contentType: false,
+            cache: false,
+            processData: false,
+            async: false,	
+                success: function(data){
+					if(data=='success'){
+						console.log("success");
+						$("#text").html("New Inpainted Image")
+						$("#loader").attr("src", "../final.png");
+						$("#loader").attr("height","auto");
+						$("#loader").attr("width","auto");
+				    }
+				    else { 
+                        $("#maindiv").css("display", "block");
+                        $("#result").css("display", "none");
+                        alert(data);
+                    }
+                },
+                error: function(){
+                    alert("There was an error in passing....please excuse us.");
+                }
+            });
+        });
+    });
+
+</script>
     <style type="text/css">
     	h1 { color: #000; font-family: 'Raleway',sans-serif; font-size: 40px; font-weight: 300; line-height: 72px; margin: 40 0 0px; text-align: center; text-transform: uppercase; }
     	h2 { color: #000; font-family: 'Raleway',sans-serif; font-size: 20px; font-weight: 200; line-height: 40px; margin: 20 0 0px; text-align: center; text-transform: uppercase; }
@@ -47,8 +87,6 @@
 		}
 
     </style>
-    {% extends "layout.html" %}
-    {% block body %}
     <h1>Image Inpainting</h1>
     <div class="show" id="maindiv">
     <form method=post enctype=multipart/form-data id="upload-file">
@@ -60,40 +98,4 @@
     <h2 id="text">Drawing Image... Please Wait..</h2>
     <img src="../loading.gif" id="loader"/>
     </div>
-    {% endblock %}
 </html>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script type="text/javascript">
-
-	$(window).load(function(){
-	    $("#upload").click(function(){
-	    	/*var image=document.getElementById("loader");
-			image.class="show";*/
-			$("#maindiv").css("display", "none");
-			$("#result").css("display", "block");
-			var form_data = new FormData($('#upload-file')[0]);
-            $.ajax({
-                type:"POST",
-                url: '/',
-                data: form_data,
-                contentType: false,
-            cache: false,
-            processData: false,
-            async: false,	
-                success: function(data){
-                    console.log("success");
-                    $("#text").html("New Inpainted Image")
-                    $("#loader").attr("src", "../final.png");
-                    $("#loader").attr("height","auto");
-                    $("#loader").attr("width","auto");
-                },
-                error: function(){
-                    alert("There was an error in passing....please excuse us.");
-                }
-            });
-        }
-        });
-    });
-
-</script>
